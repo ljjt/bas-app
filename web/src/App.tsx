@@ -5,7 +5,7 @@ function App() {
   const API = import.meta.env.VITE_API_BASE ?? "";
 
   useEffect(() => {
-    fetch(`${API}/api/hello?name=World`)
+    fetch(`${API}/api/hello?name=Världen`)
       .then(res => res.json())
       .then(data => setMessage(data.message));
   }, []);
