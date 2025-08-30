@@ -1,0 +1,73 @@
+name: Deploy (Web to SWA, Functions to Azure)
+
+on:
+  push:
+    branches: [ "main" ]
+
+permissions:
+  id-token: write
+  contents: read
+
+env:
+  NODE_VERSION_FILE: .nvmrc
+
+  # Frontend (SWA)
+  VITE_API_BASE: https://tvt1.azurewebsites.net
+  AZURE_STATIC_WEB_APPS_API_TOKEN: ${{ secrets.AZURE_STATIC_WEB_APPS_API_TOKEN }}
+
+  # Backend (Functions via OIDC)
+  AZURE_FUNCTIONAPP_NAME: tvt1
+  AZURE_TENANT_ID: ${{ vars.AZURE_TENANT_ID }}
+  AZURE_SUBSCRIPTION_ID: ${{ vars.AZURE_SUBSCRIPTION_ID }}
+  AZURE_CLIENT_ID: ${{ vars.AZURE_CLIENT_ID }}
+
+jobs:
+  web:
+    name: Web → SWA
+    runs-on: ubuntu-latest
+    defaults: { run: { working-directory: web } }
+    steps:
+      - uses: actions/checkout@v4
+      - uses: actions/setup-node@v4
+        with: { node-version-file: ${{ env.NODE_VERSION_FILE }}, cache: npm, cache-dependency-path: web/package-lock.json }
+      - run: if [ -f package-lock.json ]; then npm ci; else npm install; fi
+      - name: Build
+        run: npm run build
+        env: { VITE_API_BASE: ${{ env.VITE_API_BASE }} }
+      - name: Deploy to Static Web Apps
+        uses: Azure/static-web-apps-deploy@v1
+        with:
+          azure_static_web_apps_api_token: ${{ env.AZURE_STATIC_WEB_APPS_API_TOKEN }}
+          app_location: "web"
+          output_location: "dist"
+
+  functions:
+    name: Functions → tvt1 (OIDC)
+    runs-on: windows-latest
+    needs: web
+    defaults: { run: { working-directory: functions } }
+    steps:
+      - uses: actions/checkout@v4
+      - uses: actions/setup-node@v4
+        with: { node-version-file: ${{ env.NODE_VERSION_FILE }}, cache: npm, cache-dependency-path: functions/package-lock.json }
+      - run: if (Test-Path package-lock.json) { npm ci } else { npm install }
+      - run: npm run build
+      - run: npm prune --production
+      - name: Prepare artifact
+        shell: pwsh
+        run: |
+          mkdir artifact
+          copy host.json artifact/
+          robocopy dist artifact/dist /E | Out-Null
+          robocopy node_modules artifact/node_modules /E | Out-Null
+      - name: Azure login (OIDC)
+        uses: azure/login@v2
+        with:
+          client-id: ${{ env.AZURE_CLIENT_ID }}
+          tenant-id: ${{ env.AZURE_TENANT_ID }}
+          subscription-id: ${{ env.AZURE_SUBSCRIPTION_ID }}
+      - name: Deploy Functions
+        uses: Azure/functions-action@v1
+        with:
+          app-name: ${{ env.AZURE_FUNCTIONAPP_NAME }}
+          package: ./functions/artifact

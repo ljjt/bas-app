@@ -1,0 +1,25 @@
+# Tvinga LF för all text
+* text=auto eol=lf
+
+# Markera vanliga källkodsfiler som text
+*.ts   text
+*.tsx  text
+*.js   text
+*.jsx  text
+*.json text
+*.html text
+*.css  text
+*.yml  text
+*.yaml text
+
+# Bilder → binär (ingen diff/merge)
+*.png  binary
+*.jpg  binary
+*.jpeg binary
+*.gif  binary
+*.svg  binary
+
+# Fonts → binär
+*.woff  binary
+*.woff2 binary
+*.ttf   binary

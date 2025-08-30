@@ -1,0 +1,44 @@
+# ======================
+# Node.js / npm / pnpm
+# ======================
+node_modules/
+npm-debug.log*
+yarn-debug.log*
+yarn-error.log*
+pnpm-debug.log*
+package-lock.json.*.backup
+
+# ======================
+# Vite (frontend)
+# ======================
+dist/
+.vite/
+*.local
+
+# ======================
+# Azure Functions (backend)
+# ======================
+functions/dist/
+functions/artifact/
+functions/node_modules/
+
+# Local settings (ska aldrig in i git, men används lokalt av func)
+local.settings.json
+
+# ======================
+# OS / Editor temp
+# ======================
+.DS_Store
+Thumbs.db
+*.swp
+*.swo
+.idea/
+.vscode/*
+!.vscode/extensions.json   # behåll rekommendationer om du vill
+*.code-workspace
+
+# ======================
+# Env-filer
+# ======================
+.env
+.env.*
