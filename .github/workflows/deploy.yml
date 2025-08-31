@@ -45,6 +45,9 @@ jobs:
           azure_static_web_apps_api_token: ${{ env.AZURE_STATIC_WEB_APPS_API_TOKEN }}
           app_location: "web"
           output_location: "dist"
+          deployment_environment: production
+          skip_app_build: true
+          deployment_action: upload
 
   functions:
     name: Functions → tvt1 (OIDC)
