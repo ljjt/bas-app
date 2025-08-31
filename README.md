@@ -1,4 +1,4 @@
-# Bas App
+# Bas app
 
 En demonstrativ applikation som visar hur man bygger en fullstack-lösning med moderna webbteknologier och Azure-tjänster.
 
@@ -47,8 +47,8 @@ bas-app/
 
 ### Förutsättningar
 - Node.js 20+ (använd `.nvmrc` för rätt version)
-- Azure Functions Core Tools
-- Azure CLI (för deployment)
+- Azure Functions Core Tools (stämmer detta?)
+- Azure CLI (för deployment) (stämmer detta?)
 
 ### Lokal utveckling
 
