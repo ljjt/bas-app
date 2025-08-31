@@ -81,7 +81,7 @@ jobs:
           tenant-id: ${{ env.AZURE_TENANT_ID }}
           subscription-id: ${{ env.AZURE_SUBSCRIPTION_ID }}
       - name: Deploy Functions
-        uses: Azure/functions-action@v1
+        uses: Azure/functions-action@v2
         with:
           app-name: ${{ env.AZURE_FUNCTIONAPP_NAME }}
           package: ./artifact
