@@ -53,6 +53,7 @@ jobs:
           output_location: "dist"
           deployment_environment: production
           skip_app_build: true
+          action: upload
 
   functions:
     name: Functions → tvt1 (OIDC)
