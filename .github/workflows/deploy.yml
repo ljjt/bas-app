@@ -67,14 +67,10 @@ jobs:
         run: npm run build
       - name: Prune production dependencies
         run: npm prune --production
-      - name: Prepare artifact
-        shell: pwsh
+      - name: Prepare dist for deployment
         run: |
-          if (Test-Path artifact) { Remove-Item artifact -Recurse -Force }
-          New-Item -ItemType Directory -Path artifact
-          Copy-Item host.json artifact/
-          Copy-Item -Path dist -Destination artifact/dist -Recurse -Force
-          Copy-Item -Path node_modules -Destination artifact/node_modules -Recurse -Force
+          cp host.json dist/
+          cp -r node_modules dist/
       - name: Azure login (OIDC)
         uses: azure/login@v2
         with:
